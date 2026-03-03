@@ -1,10 +1,10 @@
-# Lēsa Bridge
+# WIP Bridge
 
-Platform bridge. Allows Claude Code CLI to talk to OpenClaw TUI agents and search shared agent memory.
+Cross-platform agent bridge. Enables Claude Code CLI to talk to OpenClaw CLI without a human in the middle.
 
 ## What It Does
 
-lesa-bridge connects two AI agent platforms so they can communicate and share memory:
+WIP Bridge connects two AI agent platforms so they can communicate and share memory:
 
 - **Claude Code** (Anthropic's coding CLI) gains access to the OpenClaw agent's conversation history, workspace files, a live messaging channel, and all OpenClaw skills
 - **OpenClaw agents** gain the ability to delegate coding tasks to Claude Code and send it messages
@@ -24,7 +24,7 @@ This is how the bridge was originally built and used. Parker runs Claude Code in
 "Yes, it fired at 2:14 AM. Context was at 91%. I sent you an iMessage about it."
 ```
 
-### Standalone Features (lesa-bridge alone)
+### Standalone Features (WIP Bridge alone)
 
 | Tool | What it does |
 |------|-------------|
@@ -38,7 +38,7 @@ This is how the bridge was originally built and used. Parker runs Claude Code in
 
 ### With Context Embeddings
 
-If you're also running openclaw-context-embeddings, the `lesa_conversation_search` tool gets semantic vector search with **recency-weighted scoring**. Context Embeddings stores conversation turns as OpenAI embeddings in SQLite. The bridge applies a linear decay (`max(0.5, 1.0 - age_days * 0.01)`) so fresh context wins ties while old strong matches still surface. Results include freshness flags (🟢 fresh, 🟡 recent, 🟠 aging, 🔴 stale). Without Context Embeddings, conversation search falls back to text matching.
+If you're also running openclaw-context-embeddings, the `lesa_conversation_search` tool gets semantic vector search with **recency-weighted scoring**. Context Embeddings stores conversation turns as OpenAI embeddings in SQLite. WIP Bridge applies a linear decay (`max(0.5, 1.0 - age_days * 0.01)`) so fresh context wins ties while old strong matches still surface. Results include freshness flags (🟢 fresh, 🟡 recent, 🟠 aging, 🔴 stale). Without Context Embeddings, conversation search falls back to text matching.
 
 | Tool | What changes |
 |------|-------------|
@@ -49,10 +49,10 @@ If you're also running openclaw-context-embeddings, the `lesa_conversation_searc
 
 Memory Crystal is a separate memory system (LanceDB vectors + SQLite metadata, local embeddings via Ollama). It has its own search path with its own recency-weighted scoring. Both systems now apply the same decay formula independently:
 
-- **lesa-bridge** searches the context-embeddings SQLite DB (OpenAI embeddings, conversation turns)
-- **memory-crystal** searches its LanceDB store (conversations, files, explicit memories from both agents)
+- **WIP Bridge** searches the context-embeddings SQLite DB (OpenAI embeddings, conversation turns)
+- **Memory Crystal** searches its LanceDB store (conversations, files, explicit memories from both agents)
 
-They're complementary, not redundant. lesa-bridge searches conversation history. Memory Crystal searches everything. Both now weight fresh results higher.
+They're complementary, not redundant. WIP Bridge searches conversation history. Memory Crystal searches everything. Both weight fresh results higher.
 
 ## Architecture
 
@@ -90,7 +90,7 @@ Both directions are live.
 Point your OpenClaw TUI or Claude Code at this repo and say:
 
 ```bash
-claude "Clone https://github.com/wipcomputer/lesa-bridge, build it, add it to my .mcp.json, and configure it for my OpenClaw install."
+claude "Clone https://github.com/wipcomputer/wip-bridge, build it, add it to my .mcp.json, and configure it for my OpenClaw install."
 ```
 
 The agent reads the README, clones the repo, builds it, and wires up the MCP config. That's it.
@@ -98,14 +98,14 @@ The agent reads the README, clones the repo, builds it, and wires up the MCP con
 ### npm
 
 ```bash
-npm install -g @wipcomputer/lesa-bridge
+npm install -g @wipcomputer/wip-bridge
 ```
 
 ### From source
 
 ```bash
-git clone https://github.com/wipcomputer/lesa-bridge.git
-cd lesa-bridge
+git clone https://github.com/wipcomputer/wip-bridge.git
+cd wip-bridge
 npm install && npm run build
 ```
 
@@ -130,7 +130,7 @@ Add to your `.mcp.json` (or Claude Code MCP settings):
   "mcpServers": {
     "lesa-bridge": {
       "command": "npx",
-      "args": ["lesa-bridge"]
+      "args": ["wip-bridge"]
     }
   }
 }
@@ -143,7 +143,7 @@ Or if installed from source:
   "mcpServers": {
     "lesa-bridge": {
       "command": "node",
-      "args": ["/path/to/lesa-bridge/dist/index.js"],
+      "args": ["/path/to/wip-bridge/dist/index.js"],
       "env": { "OPENCLAW_DIR": "/path/to/.openclaw" }
     }
   }
@@ -152,7 +152,7 @@ Or if installed from source:
 
 ## OpenClaw Skills
 
-lesa-bridge includes two skills that teach the OpenClaw agent how to use Claude Code:
+WIP Bridge includes two skills that teach the OpenClaw agent how to use Claude Code:
 
 | Skill | What it does |
 |-------|-------------|
@@ -161,12 +161,12 @@ lesa-bridge includes two skills that teach the OpenClaw agent how to use Claude 
 
 Deploy skills:
 ```bash
-cp -r skills/ ~/.openclaw/extensions/lesa-bridge/skills/
+cp -r skills/ ~/.openclaw/extensions/wip-bridge/skills/
 ```
 
 ## Skill Bridge
 
-On startup, lesa-bridge scans OpenClaw's skill directories and automatically exposes them as MCP tools. Claude Code gets the same skills the OpenClaw agent has... no extra config, no duplication.
+On startup, WIP Bridge scans OpenClaw's skill directories and automatically exposes them as MCP tools. Claude Code gets the same skills the OpenClaw agent has... no extra config, no duplication.
 
 ### How it works
 
@@ -268,4 +268,4 @@ MIT
 
 ---
 
-Built collaboratively by Parker Todd Brooks, Lēsa (OpenClaw agent), and Claude Code (CLI).
+Built by Parker Todd Brooks, Lēsa (OpenClaw, Claude Opus 4.6), Claude Code CLI (Claude Opus 4.6).
