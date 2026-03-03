@@ -1,11 +1,13 @@
 {
-  "name": "lesa-bridge",
-  "version": "0.3.0",
+  "name": "wip-bridge",
+  "version": "0.3.1",
   "description": "Platform bridge. Allows Claude Code CLI to talk to OpenClaw TUI agents and search shared agent memory",
   "type": "module",
   "main": "dist/index.js",
   "openclaw": {
-    "extensions": ["./dist/openclaw.js"]
+    "extensions": [
+      "./dist/openclaw.js"
+    ]
   },
   "bin": {
     "lesa": "./dist/cli.js"

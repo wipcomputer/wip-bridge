@@ -147,11 +147,11 @@ export function inboxCount(): number {
 export async function sendMessage(
   openclawDir: string,
   message: string,
-  options?: { agentId?: string; sessionKey?: string; senderLabel?: string }
+  options?: { agentId?: string; user?: string; senderLabel?: string }
 ): Promise<string> {
   const { token, port } = resolveGatewayConfig(openclawDir);
   const agentId = options?.agentId || "main";
-  const sessionKey = options?.sessionKey || "agent:main:main";
+  const user = options?.user || "claude-code";
   const senderLabel = options?.senderLabel || "Claude Code";
 
   const response = await fetch(`http://127.0.0.1:${port}/v1/chat/completions`, {
@@ -159,11 +159,10 @@ export async function sendMessage(
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
-      "x-openclaw-agent-id": agentId,
-      "x-openclaw-session-key": sessionKey,
     },
     body: JSON.stringify({
-      model: `openclaw:${agentId}`,
+      model: agentId,
+      user,
       messages: [
         {
           role: "user",
